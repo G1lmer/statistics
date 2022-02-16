@@ -1,0 +1,7 @@
+ANIMALS
+horse
+cow
+horse
+ANIMALS
+ANIMALS
+sheep

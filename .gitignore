@@ -1,0 +1,8 @@
+*.class
+
+# Intellij project files
+*.iml
+.idea/
+
+# output directories
+target/
