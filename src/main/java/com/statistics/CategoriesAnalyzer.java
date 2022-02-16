@@ -37,6 +37,9 @@ public class CategoriesAnalyzer {
      * @throws StatisticsFileNotFoundException when the input file does not exist.
      */
     public String getCategoriesStatistic(String inputFilePath) throws StatisticsFileNotFoundException {
+        if (inputFilePath == null) {
+            throw new StatisticsFileNotFoundException("Path is null. Provide correct path to the input file, please");
+        }
         try {
             readData(inputFilePath);
         } catch (IOException ex) {
