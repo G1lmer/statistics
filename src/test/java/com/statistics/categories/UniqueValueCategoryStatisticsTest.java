@@ -48,10 +48,8 @@ public class UniqueValueCategoryStatisticsTest {
         String expectedResult = "";
 
         String statistics = categoryStatistics.getCategoryStatistics();
-        boolean isEmpty = categoryStatistics.dataIsEmpty();
 
         assertEquals(expectedResult, statistics);
-        assertTrue(isEmpty);
     }
 
     private UniqueValueCategoryStatistics generateCategoryStatistics(String categoryName, String... data) {

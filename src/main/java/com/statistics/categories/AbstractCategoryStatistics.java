@@ -1,17 +1,25 @@
 package com.statistics.categories;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+
 import org.apache.commons.lang3.StringUtils;
 
 /**
  * {@inheritDoc}
+ *
+ * @author Serhii_Movenko
  */
 public abstract class AbstractCategoryStatistics implements CategoryStatistics {
 
     private static final String CATEGORY_NAME_DELIMITER = ":" + System.lineSeparator();
 
     private String categoryName;
+    private List<String> categoryData = new ArrayList<>();
 
-    public AbstractCategoryStatistics(String categoryName) {
+    protected AbstractCategoryStatistics(String categoryName) {
         this.categoryName = categoryName;
     }
 
@@ -20,21 +28,30 @@ public abstract class AbstractCategoryStatistics implements CategoryStatistics {
      */
     @Override
     public String getCategoryStatistics() {
-        if (dataIsEmpty()) {
-            return StringUtils.EMPTY;
-        }
-        return categoryName.toUpperCase() + CATEGORY_NAME_DELIMITER + convertDataToString();
+        return Optional.of(convertDataToString())
+                .filter(StringUtils::isNotEmpty)
+                .map(data -> categoryName.toUpperCase() + CATEGORY_NAME_DELIMITER + data)
+                .orElse(StringUtils.EMPTY);
     }
 
     /**
-     * Converts category data to the result statistic String
+     * {@inheritDoc}
      */
-    protected abstract String convertDataToString();
+    @Override
+    public void addData(String data) {
+        categoryData.add(data);
+    }
 
     /**
-     * Return true if there no any data for this category.
-     * Returns false otherwise.
+     * Provides Stream of category data for inheritors
      */
-    protected abstract boolean dataIsEmpty();
+    protected Stream<String> getCategoryDataStream() {
+        return categoryData.stream();
+    }
+
+    /**
+     * Converts category data to the result statistic String.
+     */
+    protected abstract String convertDataToString();
 
 }

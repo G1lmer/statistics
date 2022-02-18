@@ -38,10 +38,8 @@ public class QuantitativeCategoryStatisticsTest {
         String expectedResult = "";
 
         String statistics = categoryStatistics.getCategoryStatistics();
-        boolean isEmpty = categoryStatistics.dataIsEmpty();
 
         assertEquals(expectedResult, statistics);
-        assertTrue(isEmpty);
     }
 
     private QuantitativeCategoryStatistics generateCategoryStatistics(String categoryName, String... data) {

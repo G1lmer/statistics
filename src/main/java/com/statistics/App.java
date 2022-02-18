@@ -7,6 +7,8 @@ import com.statistics.exceptions.StatisticsFileNotFoundException;
 
 /**
  * The main app to demonstrate functionality
+ *
+ * @author Serhii_Movenko
  */
 public class App {
 

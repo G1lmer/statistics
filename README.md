@@ -1,6 +1,6 @@
 # Overview
 This project generates categories statistics from provided data.
-It uses Java 8.
+It uses Java 11.
 
 ## How to run
 To run project on the local machine just start main in App class.

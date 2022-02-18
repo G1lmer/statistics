@@ -52,10 +52,8 @@ public class UnifiedBrandCategoryStatisticsTest {
         String expectedResult = "";
 
         String statistics = categoryStatistics.getCategoryStatistics();
-        boolean isEmpty = categoryStatistics.dataIsEmpty();
 
         assertEquals(expectedResult, statistics);
-        assertTrue(isEmpty);
     }
 
     private UnifiedBrandCategoryStatistics generateCategoryStatistics(String categoryName, String... data) {

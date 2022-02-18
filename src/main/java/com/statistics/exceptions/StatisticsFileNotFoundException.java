@@ -1,5 +1,8 @@
 package com.statistics.exceptions;
 
+/**
+ * @author Serhii_Movenko
+ */
 public class StatisticsFileNotFoundException extends Exception {
 
     public StatisticsFileNotFoundException(String message) {

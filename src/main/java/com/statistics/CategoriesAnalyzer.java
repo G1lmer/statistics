@@ -2,11 +2,14 @@ package com.statistics;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.statistics.categories.CategoryStatistics;
 import com.statistics.exceptions.StatisticsFileNotFoundException;
@@ -14,6 +17,8 @@ import com.statistics.exceptions.StatisticsFileNotFoundException;
 /**
  * This object reads categories data from
  * the input file and provides categories statistics.
+ *
+ * @author Serhii_Movenko
  */
 public class CategoriesAnalyzer {
 
@@ -37,34 +42,43 @@ public class CategoriesAnalyzer {
      * @throws StatisticsFileNotFoundException when the input file does not exist.
      */
     public String getCategoriesStatistic(String inputFilePath) throws StatisticsFileNotFoundException {
-        if (inputFilePath == null) {
-            throw new StatisticsFileNotFoundException("Path is null. Provide correct path to the input file, please");
-        }
-        try {
-            readData(inputFilePath);
-        } catch (IOException ex) {
-            throw new StatisticsFileNotFoundException("Cannot read statistics from file " + inputFilePath, ex);
-        }
+        Optional.ofNullable(inputFilePath)
+                .orElseThrow(() ->
+                        new StatisticsFileNotFoundException(
+                                "Path is null. Provide correct path to the input file, please"));
+
+        readData(inputFilePath);
 
         return categories.values().stream()
                 .map(CategoryStatistics::getCategoryStatistics)
                 .collect(Collectors.joining(System.lineSeparator() + System.lineSeparator()));
     }
 
-    private void readData(String inputFilePath) throws IOException {
-        Path path = Paths.get(inputFilePath);
-        Files.lines(path).forEach(this::addData);
+    private void readData(String inputFilePath) throws StatisticsFileNotFoundException {
+        Path path = getPath(inputFilePath);
+        try (Stream<String> lines = Files.lines(path)) {
+            lines.forEach(this::addData);
+        } catch (IOException ex) {
+            throw new StatisticsFileNotFoundException("Cannot read statistics from file " + inputFilePath, ex);
+        }
     }
 
-    private boolean isCategory(String line) {
-        return categories.containsKey(line.toUpperCase());
+    private Path getPath(String inputFilePath) throws StatisticsFileNotFoundException {
+        try {
+            return Paths.get(inputFilePath);
+        } catch (InvalidPathException exception) {
+            throw new StatisticsFileNotFoundException("Incorrect path. Your path value may contain invalid characters");
+        }
     }
 
     private void addData(String line) {
-        if (isCategory(line)) {
-            currentCategoryName = line;
-            return;
-        }
+        String categoryName = line.toUpperCase();
+        Optional.ofNullable(categories.get(categoryName))
+                .ifPresentOrElse(categoryStatistics -> currentCategoryName = categoryName,
+                        () -> addDataForCurrentCategory(line));
+    }
+
+    private void addDataForCurrentCategory(String line) {
         categories.get(currentCategoryName).addData(line);
     }
 
